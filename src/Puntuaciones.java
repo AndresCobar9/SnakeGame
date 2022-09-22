@@ -1,4 +1,4 @@
-public class Puntuaciones {
+public class Puntuaciones  implements Comparable<Puntuaciones>{
     private int puntuacion;
     private String tiempo;
     private int segundos;
@@ -52,8 +52,19 @@ public class Puntuaciones {
         String[] obtener = tiempo.split(":");
         minutos = Integer.valueOf(obtener[0]);
         segundos= Integer.valueOf(obtener[1]);
-        total = segundos + (minutos*60);
+        this.total = segundos + (minutos*60);
 
 
+    }
+
+
+    @Override
+    public int compareTo(Puntuaciones o) {
+        int compareQuantity = ((Puntuaciones) o).getPuntuacion();
+
+        //ascending order
+        //return this.puntuacion - compareQuantity;
+
+        return compareQuantity - this.getPuntuacion();
     }
 }

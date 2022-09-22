@@ -8,13 +8,13 @@ public class HiloCaminar implements Runnable{
     }
     public void Dificult(int _Dificultad){
         if(_Dificultad == 0){
-            Dificultad = 883;
+            Dificultad = 600;
         }
         if(_Dificultad == 1){
-            Dificultad = 856;
+            Dificultad = 350;
         }
         if(_Dificultad == 2){
-            Dificultad = 500;
+            Dificultad = 100;
         }
 
     }

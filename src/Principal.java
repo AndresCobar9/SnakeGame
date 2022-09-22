@@ -1,10 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static java.awt.Color.*;
 
@@ -12,14 +9,17 @@ public class Principal extends JFrame implements ActionListener {
     PanelSnake Snake;
     Thread tiempo_consumir;
     static Tiempo Time;
+    public static int contadorTexto = 0;
+    public static String[] TextoTOP;
     static int contadorTop=0;
 
+    static Puntuaciones[] arreglotemporal  = new Puntuaciones[contadorTop];
     public static JButton Inciar;
     public static JButton Reiniciar;
 
     public static JLabel Puntaje;
 
-    public static Puntuaciones[] top15 = new Puntuaciones[10];
+    public static Puntuaciones[] top15 = new Puntuaciones[15];
 
     int dificultad = 1;
     PanelJ fondo;
@@ -27,6 +27,7 @@ public class Principal extends JFrame implements ActionListener {
     public static Boolean Finalizo = false;
 
     public Principal() {
+
         // ===== Selector de Dificultades =====
 
         JComboBox Dificultades = new JComboBox();
@@ -85,7 +86,7 @@ public class Principal extends JFrame implements ActionListener {
         fondo.setBounds(6, 10, 600, 600);
 
         // ===== Agregar Boton TOP =====
-        JButton TOP15 = new JButton("TOP 15");
+        JButton TOP15 = new JButton("🏆  TOP 15  🏆");
         TOP15.setBounds(614, 430, 265, 80);
         TOP15.setBackground(white);
         TOP15.setForeground(BLACK);
@@ -99,9 +100,19 @@ public class Principal extends JFrame implements ActionListener {
                 generarTop();
             }
         });
+        TOP15.addMouseListener(new MouseAdapter() {
+
+            public void mouseEntered(MouseEvent evt) {
+                TOP15.setBackground(lightGray);
+            }
+
+            public void mouseExited(MouseEvent evt) {
+                TOP15.setBackground(white);
+            }
+        });
 
 
-        // ===== Agregar Boton =====
+        // ===== Iniciar Boton =====
         Inciar = new JButton("INICIAR");
         Inciar.setBounds(614, 90, 265, 80);
         Inciar.setBackground(white);
@@ -124,10 +135,10 @@ public class Principal extends JFrame implements ActionListener {
                 if (Repit == false) {
                     Snake.iniciar(true, dificultad);
                     requestFocus();
-
                     tiempo_consumir = new Thread(Time);
                     Time.reiniciar();
                     tiempo_consumir.start();
+                    Inciar.setEnabled(false);
                 }
             }
         });
@@ -207,48 +218,51 @@ public class Principal extends JFrame implements ActionListener {
         Principal.generarPuntaje(c);
     }
     public static void generarPuntaje(Puntuaciones c){
-        top15[contadorTop] = c;
-        System.out.println(top15[contadorTop].getPuntuacion() +" " + top15[contadorTop].getTiempo() + "" + top15[contadorTop].getTotal());
-        contadorTop++;
-
+        if(contadorTop <15){
+            top15[contadorTop] = c;
+            contadorTop++;
+        }
     }
 
 
-    public void generarTop() {
-                for (int i = 1 ; i < contadorTop ; i++){
-                    Puntuaciones top = top15[i];
-                    int j = i-1;
-                    while ((j >= 0) && (top.getPuntuacion() < top15[j].getPuntuacion()) );{
 
-                        top15[j+1] = top15[j];
-                        j--;
-                    }
-                    top15[j+1] = top;
-                }
+// ===== Metodo para ordenar los puntajes realizados ======
+    public static void generarTop() {
+        System.out.println();
+        String texto = "";
+        System.out.println(" ======= TOP 15 ======");
+        Puntuaciones[] arreglotemporal = new Puntuaciones[contadorTop];
+        for (int i = 0; i < contadorTop; i++) {
+            arreglotemporal[i] = top15[i];
+        }
+        Arrays.sort(arreglotemporal);
 
-                for ( int i = 0; i<contadorTop;i++){
-                    System.out.println(top15[i].getPuntuacion() +" " + top15[i].getTiempo());
-                }
-
-            ComprobarIgual();
+        for (int i = 0; i < contadorTop; i++) {
+            System.out.println(arreglotemporal[i].getPuntuacion() + " " + arreglotemporal[i].getTiempo());
+            texto = texto + "<p>"+(i+1) + ". Puntuacion: " + arreglotemporal[i].getPuntuacion() + " Tiempo: " + arreglotemporal[i].getTiempo() + "</p>\n";
+        }
+        System.out.println(" =====================");
+        System.out.println();
+    htmlGenerator.generarReporte(texto);
     }
 
-    public void ComprobarIgual(){
+
+public void generarTexto(){
+
+}
+   /* public void ComprobarIgual(){
         for (int i = 1 ; i < contadorTop ; i++){
             Puntuaciones top = top15[i];
             int j = i-1;
             while ((j >= 0) && (top.getPuntuacion() == top15[j].getPuntuacion()));{
-                if(top.getTotal() < top15[j].getTotal()){
-                    top15[j+1] = top15[j];
-                    j--;
-                }
+
             }
             top15[j+1] = top;
         }
         for ( int i = 0; i<contadorTop;i++){
             System.out.println(top15[i].getPuntuacion() +" " + top15[i].getTiempo());
         }
-    }
+    }*/
 
     private void formKeyPressed(KeyEvent evt) {
         switch (evt.getKeyCode()) {
@@ -283,18 +297,16 @@ public class Principal extends JFrame implements ActionListener {
             Time.setOpaque(true);
             Time.setForeground(WHITE);
             PanelSnake.puntos = 0;
-
             fondo = new PanelJ(600, 15);
-            fondo.setBounds(10, 10, 600, 600);
+            fondo.setBounds(6, 10, 600, 600);
             Snake = new PanelSnake(600, 15);
-            Snake.setBounds(10, 10, 600, 600);
+            Snake.setBounds(6, 10, 600, 600);
             Snake.setOpaque(false);
             this.add(Snake);
             Snake.setVisible(true);
             this.add(fondo);
             Reiniciar.setEnabled(false);
             Inciar.setEnabled(true);
-
             Puntaje.setText("Puntos:  /25");
             tiempo_consumir.interrupt();
         }

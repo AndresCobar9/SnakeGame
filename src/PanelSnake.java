@@ -136,21 +136,21 @@ public class PanelSnake extends JPanel {
     }
 
 
-    public void generarComida() {
-        boolean Exist = false;
-        int a = (int) (Math.random() * SizePanelM);
-        int b = (int) (Math.random() * SizePanelM);
-        for (int[] par : Snake) {
-            if (par[0] == a && par[1] == b) {
-                Exist = true;
-                break;
+        public void generarComida() {
+            boolean Exist = false;
+            int a = (int) (Math.random() * SizePanelM);
+            int b = (int) (Math.random() * SizePanelM);
+            for (int[] par : Snake) {
+                if (par[0] == a && par[1] == b) {
+                    Exist = true;
+                    break;
+                }
+            }
+            if(!Exist){
+                this.comida[0] = a;
+                this.comida[1] = b;
             }
         }
-        if(!Exist){
-            this.comida[0] = a;
-            this.comida[1] = b;
-        }
-    }
     public void CambiarDireccion(String Dir){
         if ((this.Direccion.equals("Right")||this.Direccion.equals("Left"))&&(Dir.equals("Up") || Dir.equals("Down"))){
             this.DireccionN = Dir;
